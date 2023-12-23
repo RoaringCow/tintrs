@@ -1,1 +1,4 @@
-**/target
+**/target/
+**/frames/
+**/sonic.mp4
+**/Cargo.lock

@@ -1,91 +1,49 @@
+mod video;
+use video::process_video;
+use std::thread;
+
+const BLACK: (u8, u8, u8) = (0, 0, 0);
+const RED: (u8, u8, u8) = (255, 0, 0);
+const GREEN: (u8, u8, u8) = (0, 255, 0);
+const YELLOW:  (u8, u8, u8) = (255, 255, 0);
+const BLUE:  (u8, u8, u8) = (0, 0, 255);
+const MAGENTA: (u8, u8, u8) = (255, 0, 255);
+const CYAN: (u8, u8, u8) = (0, 255, 255);
+const WHITE: (u8, u8, u8) = (255, 255, 255);
 
 
-trait ChangableColor {
-    fn black(&self) -> String;
-    fn red(&self) -> String;
-    fn green(&self) -> String;
-    fn yellow(&self) -> String;
-    fn blue(&self) -> String;
-    fn magenta(&self) -> String;
-    fn cyan(&self) -> String;
-    fn white(&self) -> String;
+trait ChangableColor: std::fmt::Display {
 
-    fn black_back(&self) -> String;
-    fn red_back(&self) -> String;
-    fn green_back(&self) -> String;
-    fn yellow_back(&self) -> String;
-    fn blue_back(&self) -> String;
-    fn magenta_back(&self) -> String;
-    fn cyan_back(&self) -> String;
-    fn white_back(&self) -> String;
-
+    fn color(&self, rgb: (u8, u8, u8)) -> String;
+    fn background_color(&self, rgb: (u8, u8, u8)) -> String;
 }
 
 impl ChangableColor for str {
 
-    fn black(&self) -> String {
-        ("\x1b[30m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn red(&self) -> String {
-        ("\x1b[31m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn green(&self) -> String {
-        ("\x1b[32m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn yellow(&self) -> String {
-        ("\x1b[33m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn blue(&self) -> String {
-        ("\x1b[34m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn magenta(&self) -> String {
-        ("\x1b[35m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn cyan(&self) -> String {
-        ("\x1b[36m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn white(&self) -> String {
-        ("\x1b[37m".to_owned() + self + "\x1b[0m").to_owned()
-    }
 
-    // Backgrounds
-    
-    fn black_back(&self) -> String {
-        ("\x1b[40m".to_owned() + self + "\x1b[0m").to_owned()
+    fn color(&self, rgb: (u8, u8, u8)) -> String {
+        format!("\x1b[38;2;{};{};{}m{}\x1b[0m", rgb.0, rgb.1, rgb.2, self)
     }
-    fn red_back(&self) -> String {
-        ("\x1b[41m".to_owned() + self + "\x1b[0m").to_owned()
+    fn background_color(&self, rgb: (u8, u8, u8)) -> String {
+        format!("\x1b[48;2;{};{};{}m{}\x1b[0m", rgb.0, rgb.1, rgb.2, self)
     }
-    fn green_back(&self) -> String {
-        ("\x1b[42m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn yellow_back(&self) -> String {
-        ("\x1b[43m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn blue_back(&self) -> String {
-        ("\x1b[44m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn magenta_back(&self) -> String {
-        ("\x1b[45m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn cyan_back(&self) -> String {
-        ("\x1b[46m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    fn white_back(&self) -> String {
-        ("\x1b[47m".to_owned() + self + "\x1b[0m").to_owned()
-    }
-    
+    //fn custom_color(&self, )
 }
 
-#[allow(dead_code)]
-fn set_color(color: (u8, u8, u8)) {
-    print!("\x1b[");
-}
 
 fn main() {
-    println!("{}{}{}{}{}{}{}{}", " ".white_back(), " ".white_back(), " ".cyan_back(), " ".cyan_back(), " ".magenta_back(), " ".magenta_back(), " ".yellow_back(), " ".yellow_back());
+    let delay = std::time::Duration::from_millis(20);
 
-    println!("{}{}{}{}{}{}{}{}", " ".cyan_back(), " ".cyan_back(), " ".white_back(), " ".white_back(), " ".yellow_back(), " ".yellow_back(), " ".magenta_back(), " ".magenta_back());
+    let frames = process_video("/home/ersan/tintrs/sonic.mp4", 10);
 
+    for frame in frames {
+        print!("{}[2J", 27 as char);
+        thread::sleep(std::time::Duration::from_millis(10));
+        for row in frame {
+            for pixel in row {
+                print!("{}", "  ".background_color((pixel.r, pixel.g, pixel.b)));
+            }
+            println!();
+        }
+    }
 }
-
