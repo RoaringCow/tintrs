@@ -62,6 +62,8 @@ pub fn process_video(path_str: &str, downscale: u32) -> Vec<Vec<Vec<Rgb>>> {
 
     println!("{} frames processed", file_count);
     
+    let _ = fs::remove_dir_all("frames");
+    
     pixels
 
 }

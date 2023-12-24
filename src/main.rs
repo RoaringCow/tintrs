@@ -3,15 +3,6 @@ use video::process_video;
 use std::thread;
 use std::io::{stdout, Write};
 
-const BLACK: (u8, u8, u8) = (0, 0, 0);
-const RED: (u8, u8, u8) = (255, 0, 0);
-const GREEN: (u8, u8, u8) = (0, 255, 0);
-const YELLOW:  (u8, u8, u8) = (255, 255, 0);
-const BLUE:  (u8, u8, u8) = (0, 0, 255);
-const MAGENTA: (u8, u8, u8) = (255, 0, 255);
-const CYAN: (u8, u8, u8) = (0, 255, 255);
-const WHITE: (u8, u8, u8) = (255, 255, 255);
-
 
 trait ChangableColor: std::fmt::Display {
 
