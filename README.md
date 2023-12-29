@@ -1,1 +1,1 @@
-Rust tool for colored text and video player in terminal(no audio)
+mp4 player in the terminal.
